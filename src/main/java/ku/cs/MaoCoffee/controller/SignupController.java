@@ -1,7 +1,8 @@
 package ku.cs.MaoCoffee.controller;
 
 
-import ku.cs.MaoCoffee.entity.Member;
+//import ku.cs.MaoCoffee.entity.Member;
+import ku.cs.MaoCoffee.model.SignupRequest;
 import ku.cs.MaoCoffee.service.SignupService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,8 @@ public class SignupController {
 
 
     @PostMapping("/signup")
-    public String signupUser(@ModelAttribute Member user, Model model) {
-
-
+    public String signupUser(@ModelAttribute SignupRequest user,
+                             Model model) {
         if (signupService.isUsernameAvailable(user.getUsername())) {
             signupService.createUser(user);
             model.addAttribute("signupSuccess", true);
@@ -38,5 +38,6 @@ public class SignupController {
         }
         return "signup";
     }
+
 }
 
