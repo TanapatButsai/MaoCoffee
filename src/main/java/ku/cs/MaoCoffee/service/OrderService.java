@@ -12,6 +12,7 @@ import ku.cs.MaoCoffee.repository.PurchaseOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -58,6 +59,38 @@ public class OrderService {
         item.setMenu(menu);
         item.setQuantity(request.getQuantity());
         itemRepository.save(item);
+    }
+
+
+    public PurchaseOrder getCurrentOrder() {
+        if (currentOrderId == null)
+            createNewOrder();
+        return orderRepository.findById(currentOrderId).get();
+    }
+
+
+    public void submitOrder() {
+        PurchaseOrder currentOrder =
+                orderRepository.findById(currentOrderId).get();
+        currentOrder.setTimestamp(LocalDateTime.now());
+        currentOrder.setStatus(Status.CONFIRM);
+        orderRepository.save(currentOrder);
+        currentOrderId = null;
+    }
+
+    public List<PurchaseOrder> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    public PurchaseOrder getById(UUID id) {
+        return orderRepository.findById(id).get();
+    }
+
+
+    public void finishOrder(UUID orderId) {
+        PurchaseOrder record = orderRepository.findById(orderId).get();
+        record.setStatus(Status.FINISH);
+        orderRepository.save(record);
     }
 }
 
